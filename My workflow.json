@@ -1,0 +1,184 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "c0ac2b57-a771-4759-860b-1f66d6fb422a",
+      "name": "When chat message received",
+      "webhookId": "5d785a1e-6025-45c7-b488-e396a9466e9c"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are the WhatsApp assistant for FreshCart Fruits & Veggies, a fruit & vegetable delivery business. Always answer as FreshCart. Use the Google Sheets tool to look up opening hours, delivery, and payment FAQ answers before responding. Never say you are an AI with no location — you represent this business"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "e236661b-3f3a-40b1-83e3-0833b6920862",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1wr2aCZMPY-vJNcneodtT0psIvSYcwIT0AvTt9ffPBBk",
+          "mode": "list",
+          "cachedResultName": "FreshCart_WhatsApp_FAQ_Demo",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wr2aCZMPY-vJNcneodtT0psIvSYcwIT0AvTt9ffPBBk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 41966261,
+          "mode": "list",
+          "cachedResultName": "FAQ Auto-Reply",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wr2aCZMPY-vJNcneodtT0psIvSYcwIT0AvTt9ffPBBk/edit#gid=41966261"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "FreshCart Fruits & Veggies -- WhatsApp FAQ Auto-Reply Sheet",
+              "lookupValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('values0_Value', ``, 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        400,
+        144
+      ],
+      "id": "ba312767-1638-4b3a-bf75-b2144c7dd255",
+      "name": "Get row(s) in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "FM5AEyZJ5GgzRxl4",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        240,
+        208
+      ],
+      "id": "a2ac0c25-c2c4-449a-ba6c-493d9cbbbda1",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "model": "llama-3.1-8b-instant",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        96,
+        192
+      ],
+      "id": "484338fa-92e3-4efe-995d-d9ba1a5be6de",
+      "name": "Groq Chat Model",
+      "notesInFlow": false,
+      "credentials": {
+        "groqApi": {
+          "id": "DPmpflRoZKrdIdUg",
+          "name": "Groq account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "ai-customer-support-agent",
+        "height": 80
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -192,
+        160
+      ],
+      "typeVersion": 1,
+      "id": "299aebd3-8ba9-4337-8c5f-46006418275b",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "e0af1b40-ce5f-4a21-a2c6-8a53498cf212",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a3f3af89fc465c7eceec691a7b19d17e2623e876658235e6dc807d7c3afc7f56"
+  },
+  "nodeGroups": [],
+  "id": "aC9N7qIpfPfTi19r",
+  "tags": []
+}
